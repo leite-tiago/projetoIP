@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/tiagoleite/Desktop/ProjetoIP/**/*.jar",
+        "DictionaryIP.jar"
+    ]
+}
