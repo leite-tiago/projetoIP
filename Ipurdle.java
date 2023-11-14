@@ -1,5 +1,3 @@
-import java.util.Dictionary;
-
 public class Ipurdle {
     /**
      * @param args
@@ -23,7 +21,8 @@ public class Ipurdle {
         IpurdleTest.testIsMaxClue();
         System.out.println();
 
-        System.out.println(printClue( "ultimo", 1232312));
+
+        System.out.println(printClue( "ultimo", 133232, 6));
 
     }
 
@@ -82,7 +81,7 @@ public class Ipurdle {
     // dados dois números inteiros clue e size, e
     // assumindo que
     // size é um número maior que zero, clue representa uma pista para palavras de tamanho size
-    // e clue não é a maior pista para palavras de tamanho size
+    // e clue não é a maior pista para palavras de tamanho size, esta função
     // calcula o número que representa a pista imediatamente a seguir, ou seja, o menor número inteiro
     // maior que clue que representa uma pista para palavras de tamanho size.
     public static int nextClue(int clue, int size) {
@@ -103,23 +102,23 @@ public class Ipurdle {
     // não ser null e um número inteiro clue que se assume representar uma pista para guess, imprime
     // guess com as suas letras coloridas de acordo com a clue. Devem ser coloridas a verde as letras
     // que na pista têm 3, a amarelo as letras que na pista têm 2 e a preto as letras que na pista têm 1.
-    public static String printClue(String guess, int clue) {
-        String clue_str = Integer.toString(clue);
-        String guess_colored = "";
+    public static String printClue(String guess, int clue, int size) {
+        StringBuilder guess_colored = new StringBuilder();
+        int place = 0;
         // Ciclo para percorrer a clue
-        for (int i = 0; i < clue_str.length(); i++) {
-            guess_colored = String.valueOf(i);
-            if (clue_str.charAt(i) == 1) {
-                guess_colored = StringColouring.toColoredString(guess_colored, StringColouring.BLACK);
+        for (int i = size; i > 0; i--) {
+            place = (int)Math.pow(10, i - 1);
+            if ((clue / place) % 10 == 1) {
+                guess_colored.append(StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.BLACK));
             }
-            if (clue_str.charAt(i) == 2){
-                guess_colored = StringColouring.toColoredString(guess_colored, StringColouring.YELLOW);
+            if ((clue / place) % 10 == 2){
+                guess_colored.append(StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.YELLOW));
             }
-            if (clue_str.charAt(i) == 3) {
-                guess_colored = StringColouring.toColoredString(guess_colored, StringColouring.GREEN);
+            if ((clue / place) % 10 == 3) {
+                guess_colored.append(StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.GREEN));
             }
         }
-        return guess_colored;
+        return guess_colored.toString();
     }
 
     // dadas duas Strings guess e word,
