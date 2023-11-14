@@ -8,8 +8,6 @@ public class Ipurdle {
         int Maxattempts = 6;
         DictionaryIP gameWordsDictionary, puzzlesDictionary;
 
-        int cluelength;
-
         System.out.println("Testing Ipurdle.java \n");
 
         IpurdleTest.testIsValidClue();
@@ -21,8 +19,10 @@ public class Ipurdle {
         IpurdleTest.testIsMaxClue();
         System.out.println();
 
-
         System.out.println(printClue( "ultimo", 133232, 6));
+
+		IpurdleTest.testClueForGuessAndWord();
+        System.out.println();
 
     }
 
@@ -104,18 +104,19 @@ public class Ipurdle {
     // que na pista têm 3, a amarelo as letras que na pista têm 2 e a preto as letras que na pista têm 1.
     public static String printClue(String guess, int clue, int size) {
         StringBuilder guess_colored = new StringBuilder();
-        int place = 0;
         // Ciclo para percorrer a clue
         for (int i = size; i > 0; i--) {
-            place = (int)Math.pow(10, i - 1);
-            if ((clue / place) % 10 == 1) {
-                guess_colored.append(StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.BLACK));
+            if ((clue / (int)Math.pow(10, i - 1)) % 10 == 1) {
+                guess_colored.append(
+                    StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.BLACK));
             }
-            if ((clue / place) % 10 == 2){
-                guess_colored.append(StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.YELLOW));
+            if ((clue / (int)Math.pow(10, i - 1)) % 10 == 2){
+                guess_colored.append(
+                    StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.YELLOW));
             }
-            if ((clue / place) % 10 == 3) {
-                guess_colored.append(StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.GREEN));
+            if ((clue / (int)Math.pow(10, i - 1)) % 10 == 3) {
+                guess_colored.append(
+                    StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.GREEN));
             }
         }
         return guess_colored.toString();
@@ -127,9 +128,17 @@ public class Ipurdle {
     // No caso de uma letra de word, que só ocorre uma vez nesta palavra, estar em várias posições
     // erradas de guess, apenas a letra na posição mais à esquerda é identificada como letra certa na
     // posição errada.
-    public static boolean clueForGuessAndWord(String guess, String word) {
-
-        return false;
+    public static int clueForGuessAndWord(String guess, String word) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = guess.length() - 2; i > 0; i--){
+            if (guess.charAt(i) == word.charAt(i))
+                sb.append(3);
+            if (word.contains(String.valueOf(guess.charAt(i))) == true && !guess.substring(0, i).contains(String.valueOf(guess.charAt(i))))
+                sb.append(2);
+            else
+                sb.append(1);
+        }
+        return Integer.parseInt(sb.toString());
     }
 
     //  dado um objeto do tipo

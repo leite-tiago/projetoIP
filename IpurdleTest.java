@@ -207,74 +207,73 @@ public class IpurdleTest {
 		System.out.println (error ? "FAIL" : "PASS");
 	}
 
+	/*private*/ static void testClueForGuessAndWord () {
+		System.out.println ("Testing ClueForGuessAndWord  ():");
+		boolean error = false;
 
-	// private static void testClueForGuessAndWord () {
-	// 	System.out.println ("Testing ClueForGuessAndWord  ():");
-	// 	boolean error = false;
+		String guess = "TERNS";
+		String word = "CIGAR";
+		int expectedClue = 11211;
+		int obtainedClue = Ipurdle.clueForGuessAndWord (guess,word);
+		if (obtainedClue != expectedClue) {
+			System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
+			error = true;
+		}
 
-	// 	String guess = "TERNS";
-	// 	String word = "CIGAR";
-	// 	int expectedClue = 11211;
-	// 	int obtainedClue = Ipurdle.clueForGuessAndWord (guess,word);
-	// 	if (obtainedClue != expectedClue) {
-	// 		System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
-	// 		error = true;
-	// 	}
+		guess = "TERNS";
+		word = "REBUT";
+		expectedClue = 23211;
+		obtainedClue = Ipurdle.clueForGuessAndWord (guess, word);
+		if (obtainedClue != expectedClue) {
+			System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
+			error = true;
+		}
 
-	// 	guess = "TERNS";
-	// 	word = "REBUT";
-	// 	expectedClue = 23211;
-	// 	obtainedClue = Ipurdle.clueForGuessAndWord (guess, word);
-	// 	if (obtainedClue != expectedClue) {
-	// 		System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
-	// 		error = true;
-	// 	}
+		guess = "TERNS";
+		word = "HUMPH";
+		expectedClue = 11111;
+		obtainedClue = Ipurdle.clueForGuessAndWord (guess, word);
+		if (obtainedClue != expectedClue) {
+			System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
+			error = true;
+		}
 
-	// 	guess = "TERNS";
-	// 	word = "HUMPH";
-	// 	expectedClue = 11111;
-	// 	obtainedClue = Ipurdle.clueForGuessAndWord (guess, word);
-	// 	if (obtainedClue != expectedClue) {
-	// 		System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
-	// 		error = true;
-	// 	}
+		guess = "TERNS";
+		word = "TERNS";
+		expectedClue = 33333;
+		obtainedClue = Ipurdle.clueForGuessAndWord (guess, word);
+		if (obtainedClue != expectedClue) {
+			System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
+			error = true;
+		}
 
-	// 	guess = "TERNS";
-	// 	word = "TERNS";
-	// 	expectedClue = 33333;
-	// 	obtainedClue = Ipurdle.clueForGuessAndWord (guess, word);
-	// 	if (obtainedClue != expectedClue) {
-	// 		System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
-	// 		error = true;
-	// 	}
-
-	// 	guess = "BUBBLE";
-	// 	word = "ABOUND";
-	// 	expectedClue = 221111;
-	// 	obtainedClue = Ipurdle.clueForGuessAndWord (guess,word);
-	// 	if (obtainedClue != expectedClue) {
-	// 		System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
-	// 		error = true;
-	// 	}
+		guess = "BUBBLE";
+		word = "ABOUND";
+		expectedClue = 221111;
+		obtainedClue = Ipurdle.clueForGuessAndWord (guess,word);
+		if (obtainedClue != expectedClue) {
+			System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
+			error = true;
+		}
 		
-	// 	guess = "BUBBLE";
-	// 	word = "BUBBLE";
-	// 	expectedClue = 333333;
-	// 	obtainedClue = Ipurdle.clueForGuessAndWord (guess,word);
-	// 	if (obtainedClue != expectedClue) {
-	// 		System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
-	// 		error = true;
-	// 	}
+		guess = "BUBBLE";
+		word = "BUBBLE";
+		expectedClue = 333333;
+		obtainedClue = Ipurdle.clueForGuessAndWord (guess,word);
+		if (obtainedClue != expectedClue) {
+			System.out.printf (">>> failed on clue for %s and %s %n", guess, word);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedClue, obtainedClue);
+			error = true;
+		}
 
 
-	// 	System.out.println (error ? "FAIL" : "PASS");	
-	// }
+		System.out.println (error ? "FAIL" : "PASS");	
+	}
 
 
 	// private static void testHowManyWordsWithClue () {
