@@ -129,18 +129,27 @@ public class Ipurdle {
     // erradas de guess, apenas a letra na posição mais à esquerda é identificada como letra certa na
     // posição errada.
     public static int clueForGuessAndWord(String guess, String word) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = guess.length() - 2; i > 0; i--){
-            if (guess.charAt(i) == word.charAt(i))
-                sb.append(3);
-            if (word.contains(String.valueOf(guess.charAt(i))) == true && !guess.substring(0, i).contains(String.valueOf(guess.charAt(i))))
-                sb.append(2);
-            else
-                sb.append(1);
+        int clue = 0;
+
+        for(int i = 0; i < guess.length(); i++){
+            clue *= 10;
+            char character = guess.charAt(i);
+            if(word.contains(String.valueOf(character))){
+                if(character == word.charAt(i)){
+                    clue += 3;
+                } else {
+                    clue += 2;
+                    word = word.replaceFirst(String.valueOf(character), " ");
+                }
+            } else {
+                clue += 1;
+            }
         }
-        return Integer.parseInt(sb.toString());
+            
+        return clue;
     }
 
+    
     //  dado um objeto do tipo
     //  DictionaryIP que se assume não ser null, um número inteiro clue que se assume representar uma
     //  pista para palavras desse dicionário e uma String guess que se assume ter o tamanho certo, retorna
