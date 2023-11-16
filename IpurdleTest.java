@@ -276,48 +276,48 @@ public class IpurdleTest {
 	}
 
 
-	// private static void testHowManyWordsWithClue () {
-	// 	System.out.println ("Testing howManyWordsWithClue ():");
-	// 	boolean error = false;
+	/*private*/ static void testHowManyWordsWithClue () {
+		System.out.println ("Testing howManyWordsWithClue ():");
+		boolean error = false;
 
-	// 	String guess = "TERNS";						 		
-	// 	String[] words = 									    // clue
-	// 		{"CIGAR", "DWARF", "MAJOR", "RUDDY",				// 11211
-	// 				"REBUT", "REACT", "RETCH", 			 		// 23211
-	// 				"SISSY", "BLUSH", "BASIC",			 		// 11112
-	// 				"HUMPH","FOCAL","CLUCK","CLOCK","CLICK",	// 11111
-	// 		"TERNS"};							 		// 33333
-	// 	DictionaryIP dictionary = new DictionaryIP (5, words);
+		String guess = "TERNS";						 		
+		String[] words = 									    // clue
+			{"CIGAR", "DWARF", "MAJOR", "RUDDY",				// 11211
+					"REBUT", "REACT", "RETCH", 			 		// 23211
+					"SISSY", "BLUSH", "BASIC",			 		// 11112
+					"HUMPH","FOCAL","CLUCK","CLOCK","CLICK",	// 11111
+			"TERNS"};							 		// 33333
+		DictionaryIP dictionary = new DictionaryIP (5, words);
 
-	// 	int clue = 11211;
-	// 	int expectedNum = 4;
-	// 	int obtainedNum = Ipurdle.howManyWordsWithClue (dictionary, clue, guess);
-	// 	if (obtainedNum != expectedNum) {
-	// 		System.out.printf (">>> failed on  %d and %s %n", clue, guess);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedNum, obtainedNum);
-	// 		error = true;
-	// 	}
+		int clue = 11211;
+		int expectedNum = 4;
+		int obtainedNum = Ipurdle.howManyWordsWithClue (dictionary, clue, guess);
+		if (obtainedNum != expectedNum) {
+			System.out.printf (">>> failed on  %d and %s %n", clue, guess);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedNum, obtainedNum);
+			error = true;
+		}
 
-	// 	clue = 23211;
-	// 	expectedNum = 3;
-	// 	obtainedNum = Ipurdle.howManyWordsWithClue (dictionary, clue, guess);
-	// 	if (obtainedNum != expectedNum) {
-	// 		System.out.printf (">>> failed on  %d and %s %n", clue, guess);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedNum, obtainedNum);
-	// 		error = true;
-	// 	}
+		clue = 23211;
+		expectedNum = 3;
+		obtainedNum = Ipurdle.howManyWordsWithClue (dictionary, clue, guess);
+		if (obtainedNum != expectedNum) {
+			System.out.printf (">>> failed on  %d and %s %n", clue, guess);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedNum, obtainedNum);
+			error = true;
+		}
 
-	// 	clue = 11111;
-	// 	expectedNum = 5;
-	// 	obtainedNum = Ipurdle.howManyWordsWithClue (dictionary, clue, guess);
-	// 	if (obtainedNum != expectedNum) {
-	// 		System.out.printf (">>> failed on  %d and %s %n", clue, guess);
-	// 		System.out.printf (">>> expected: %d obtained: %d %n", expectedNum, obtainedNum);
-	// 		error = true;
-	// 	}
+		clue = 11111;
+		expectedNum = 5;
+		obtainedNum = Ipurdle.howManyWordsWithClue (dictionary, clue, guess);
+		if (obtainedNum != expectedNum) {
+			System.out.printf (">>> failed on  %d and %s %n", clue, guess);
+			System.out.printf (">>> expected: %d obtained: %d %n", expectedNum, obtainedNum);
+			error = true;
+		}
 
-	// 	System.out.println (error ? "FAIL" : "PASS");	
-	// }
+		System.out.println (error ? "FAIL" : "PASS");	
+	}
 
 	// private static void testBetterClueForGuess() {
 	// 	System.out.println ("Testing betterClueForGuess ():");
