@@ -1,32 +1,40 @@
+import java.util.Dictionary;
+import java.util.Random;
+import java.util.Scanner;
+
 public class Ipurdle {
     /**
      * @param args
      */
     public static void main(String[] args) {
         // size varia entre 3 e 7 
-        int clue, size;
+        int clue;
+        int size = 5;
         String guess, word;
         int Maxattempts = 6;
-        DictionaryIP gameWordsDictionary, puzzlesDictionary;
+        DictionaryIP gameWordsDictionary = new DictionaryIP(5);
+        DictionaryIP puzzlesDictionary = new DictionaryIP(5);
+        Scanner sc = new Scanner(System.in);
+        Random random = new Random(); 
 
-        System.out.println("Testing Ipurdle.java \n");
-
-        IpurdleTest.testIsValidClue();
         System.out.println();
-
-        IpurdleTest.testMinClue();
-        System.out.println();
-
-        IpurdleTest.testIsMaxClue();
-        System.out.println();
-
-        IpurdleTest.testNextClue ();
-		System.out.println ();
-
-        System.out.println(printClue( "ultimo", 133232, 6));
-
-		IpurdleTest.testClueForGuessAndWord();
-        System.out.println();
+        System.out.println("Bem vindo ao jogo Ipurdle!");
+        System.out.println("Neste jogo as palavras têm tamanho 5. O dicionário tem apenas palavras em inglês realcionadas com IP.");
+        System.out.println("Tens apenas 6 tentativas para advinhar a palavra. Boa sorte!");
+        while (Maxattempts > 0){
+            Maxattempts--;
+            System.out.print("Palavra a jogar? ");
+            guess = sc.nextLine().toUpperCase();
+            word = puzzlesDictionary.getWord(random.nextInt(puzzlesDictionary.lenght()));
+            System.out.println(word);
+            clue = clueForGuessAndWord(guess, word);
+            System.out.println(printClue(guess, clue, size)); 
+            System.out.println(playGuess(puzzlesDictionary, guess));
+            if (guess == word)
+                System.out.println("Parabéns, encontraste a palavra secreta!");
+        }
+        System.out.println("Acabaram-se as tentativas, mais sorte na próxima tentativa");
+        
 
     }
 
@@ -129,13 +137,12 @@ public class Ipurdle {
                 clue += position;
             }
         }
-        int nextclue = clue;
-        return nextclue;
+        return clue;
     }
 
    
     /**
-     *  dada uma String guess que se assume
+     * dada uma String guess que se assume
      * não ser null e um número inteiro clue que se assume representar uma pista para guess, imprime
      * guess com as suas letras coloridas de acordo com a clue. Devem ser coloridas a verde as letras
      * que na pista têm 3, a amarelo as letras que na pista têm 2 e a preto as letras que na pista têm 1.
@@ -174,7 +181,7 @@ public class Ipurdle {
 
    
     /**
-     *  dadas duas Strings guess e word,
+     * dadas duas Strings guess e word,
      * que se assumem ter o mesmo tamanho, retorna o inteiro que representa a pista a dar à jogada
      * guess se a palavra a adivinhar for word.
      * No caso de uma letra de word, que só ocorre uma vez nesta palavra, estar em várias posições
@@ -191,21 +198,20 @@ public class Ipurdle {
         // Ciclo para percorrer guess
         for(int i = 0; i < guess.length(); i++){
             clue *= 10;
-            char character = guess.charAt(i);
             // Verifica se word contém o caractere situado no index i da guess
-            if(word.contains(String.valueOf(character))){
+            if(word.contains(String.valueOf(guess.charAt(i)))){
                 // Verifica se o caractere situado no index i da guess está no mesmo index na word
-                if(character == word.charAt(i)){
+                if(guess.charAt(i) == word.charAt(i)){
                     clue += 3;
                 } else {
                     clue += 2;
                     /* Subsitui o caractere situado no index i da guess por um espaço em branco
-                     *
-                     * Isto serve para, no caso de uma letra de word, que só ocorre uma vez nesta palavra,
-                     * estar em várias posições erradas de guess, apenas a letra na posição mais à esquerda 
-                     * é identificada como letra certa na posição errada 
-                     */
-                    word = word.replaceFirst(String.valueOf(character), " ");
+                    *
+                    * Isto serve para, no caso de uma letra de word, que só ocorre uma vez nesta palavra,
+                    * estar em várias posições erradas de guess, apenas a letra na posição mais à esquerda 
+                    * é identificada como letra certa na posição errada 
+                    */
+                    word = word.replaceFirst(String.valueOf(guess.charAt(i)), " ");
                 }
             } else {
                 clue += 1;
@@ -214,36 +220,86 @@ public class Ipurdle {
             
         return clue;
     } 
-    //  dado um objeto do tipo
-    //  DictionaryIP que se assume não ser null, um número inteiro clue que se assume representar uma
-    //  pista para palavras desse dicionário e uma String guess que se assume ter o tamanho certo, retorna
-    //  o número de palavras válidas do dicionário que se fossem a palavra a adivinhar, dariam origem à
-    //  pista clue para guess.
+    
+    /**
+     *  dado um objeto do tipo
+     * DictionaryIP que se assume não ser null, um número inteiro clue que se assume representar uma
+     * pista para palavras desse dicionário e uma String guess que se assume ter o tamanho certo, retorna
+     * o número de palavras válidas do dicionário que se fossem a palavra a adivinhar, dariam origem à
+     * pista clue para guess. 
+     * @param dictionary
+     * @param clue
+     * @param guess
+     * @ensures dictionary não é null
+     * @ensures clue representa uma pista para palavras desse dicionário
+     * @ensures guess tem o tamanho certo
+     * @return o número de palavras válidas do dicionário que se fossem a palavra a adivinhar, dariam 
+     * origem à pista clue para guess
+     */
     public static int howManyWordsWithClue(DictionaryIP dictionary, int clue, String guess) {
-
-        return 1;
+        int counter = 0;
+        // Ciclo para percorrer o dicionário
+        for(int i = 0; i < dictionary.lenght(); i++){
+            String word = dictionary.getWord(i);
+            // Verifica se clue é válida para a palavra do dicionário no índice i
+            if(clue == clueForGuessAndWord(guess, word))
+                counter++;
+        }
+        return counter;
     }
 
-    // dado um objeto do tipo
-    // DictionaryIP, que se assume não ser null e uma String guess que se assume ter o tamanho certo,
-    // retorna o inteiro que representa a pista para guess que serve para mais palavras do dicionário
-    // dado. No caso de haver pistas empatadas, dentre estas, é escolhida a menor.
-    // Note que as pistas podem ser percorridas recorrendo às funções minClue e a nextClue descritas
-    // acima. A pista calculada diz-se que é a melhor porque é a que torna mais difícil o jogador acertar na
-    // palavra.
-    public static boolean betterClueForGuess(DictionaryIP dictionary, String guess) {
-
-        return false;
+    
+    /**
+     * dado um objeto do tipo
+     * DictionaryIP, que se assume não ser null e uma String guess que se assume ter o tamanho certo,
+     * retorna o inteiro que representa a pista para guess que serve para mais palavras do dicionário
+     * dado. No caso de haver pistas empatadas, dentre estas, é escolhida a menor.
+     * Note que as pistas podem ser percorridas recorrendo às funções minClue e a nextClue descritas
+     * acima. A pista calculada diz-se que é a melhor porque é a que torna mais difícil o jogador acertar na
+     * palavra. 
+     * @param dictionary
+     * @param guess
+     * @requires dictionary não é null
+     * @requires guess tem o tamanho certo
+     * @return o inteiro que representa a pista para guess que serve para mais palavras do dicionário dado
+     */
+    public static int betterClueForGuess(DictionaryIP dictionary, String guess) {
+        int betterClueForGuess = 0;
+        int howManyWordsWithClue = 0;
+        // Ciclo para percorrer as clue's
+        for(int clue = minClue(guess.length()); !isMaxClue(clue, guess.length()); clue = nextClue(clue, guess.length())) {
+            // Verifica se a clue atual está presente em mais palavras do que a última clue guardada
+            if (howManyWordsWithClue(dictionary, clue, guess) > howManyWordsWithClue) {
+                howManyWordsWithClue = howManyWordsWithClue(dictionary, clue, guess);
+                betterClueForGuess = clue;
+                }
+        }
+        return betterClueForGuess;
     }
 
-    // dado um objeto do tipo Dictionary que
-    // se assume não ser null, e uma String guess que se assume ter o tamanho certo:
-    // 1. calcula a melhor pista para guess face ao dicionário dado, recorrendo à função anterior,
-    // betterClueForGuess
-    // 2. remove do dicionário todas as palavras que não resultariam nessa pista
-    // 3. retorna a pista
-    public static boolean playGuess(DictionaryIP dictionary, String guess) {
+    
+    /**
+     * dado um objeto do tipo Dictionary que
+     * se assume não ser null, e uma String guess que se assume ter o tamanho certo:
+     * 1. calcula a melhor pista para guess face ao dicionário dado, recorrendo à função anterior,
+     * betterClueForGuess
+     * 2. remove do dicionário todas as palavras que não resultariam nessa pista
+     * 3. retorna a pista
+     * 
+     * @param dictionary
+     * @param guess
+     * @requires dictionary não é null
+     * @requires guess tem o tamanho certo
+     * @return pista
+     */
+    public static int playGuess(DictionaryIP dictionary, String guess) {
+        int clue = betterClueForGuess(dictionary, guess);
 
-        return false;
+        for (int i = 0; i < dictionary.lenght(); i++) {
+            if (clue != clueForGuessAndWord(guess, dictionary.getWord(i)))
+                dictionary.selectForRemove(i);
+        }
+        dictionary.removeSelected();
+        return clue;
     }
 }
