@@ -12,44 +12,50 @@ import java.util.Scanner;
  */
 public class Ipurdle {
     public static void main(String[] args) {
+        // Os valores para size e maxAttempts caso não sejam introduzidos argumentos
         int size = 5;
         int maxAttempts = 6;
-        // Tarefa adicional - verificar
-        if (args.length >= 2) {
-            size = Integer.parseInt(args[0]);
-            maxAttempts = Integer.parseInt(args[1]);
+        /****************** Tarefa adicional **********************************
+        * consiste em ter o método main preparado para ler o tamanho
+        * das palavras e o número máximo de tentativas a partir de argumentos
+        * da linha de comandos e usar o valor 5 e 6 apenas quando estes valores
+        * não são fornecidos.
+        */ 
+        if(args.length>=2){
+            size=Integer.parseInt(args[0]);
+            maxAttempts=Integer.parseInt(args[1]);
         }
 
         DictionaryIP gameWordsDictionary = new DictionaryIP(size);
         DictionaryIP puzzlesDictionary = new DictionaryIP(size);
         Scanner sc = new Scanner(System.in);
-        boolean vitoria = false;
-
+        boolean vitoria =false;
+        // Cabeçalho do jogo
         System.out.println();
         System.out.println("Bem vindo ao jogo Ipurdle!");
         System.out.println("Neste jogo as palavras têm tamanho " + size + ". O dicionário tem apenas palavras em inglês realcionadas com IP.");
         System.out.println("Tens apenas " + maxAttempts +" tentativas para advinhar a palavra. Boa sorte!");
         
-        while (maxAttempts > 0 && !vitoria){
+        while (maxAttempts > 0 && !vitoria) {
             System.out.print("Palavra a jogar? ");
             String guess = sc.nextLine().toUpperCase();
-            int pista=playGuess(puzzlesDictionary, guess);
-
-            if (guess.length() != size)
+            int pista = playGuess(puzzlesDictionary, guess);
+            // Verifica se a guess tem o tamanho certo e se a guess é válida tendo em conta o dicionário
+            if (guess.length() !=size)
             System.out.println("Palavra inválida. Tamanho errado");
             else if (!gameWordsDictionary.isValid(guess)) {
                 System.out.println("Palavra inválida. Não existe no dicionário.");
             } else {
-            System.out.println("Palavra com pista -> " + printClue(guess, pista));
-            maxAttempts--;
-            if (isMaxClue(pista, guess.length())){
-                vitoria = true;
+                System.out.println("Palavra com pista -> "+ printClue(guess, pista));
+                maxAttempts--;
+                if(isMaxClue(pista, guess.length())) {
+                    vitoria = true;
+                }
             }
         }
-        }
-        if (vitoria == false){
+        if(vitoria==false){
             System.out.println("Ohhh, perdeste.");
-        } else {
+        }else{
             System.out.println("Parabéns, encontraste a palavra secreta!");
         }
           sc.close();
@@ -274,14 +280,19 @@ public class Ipurdle {
     public static int betterClueForGuess(DictionaryIP dictionary, String guess) {
         int betterClueForGuess = 0;
         int howManyWordsWithClue = 0;
-        // Ciclo para percorrer as clue's
-        for(int clue = minClue(guess.length()); !isMaxClue(clue, guess.length()); clue = nextClue(clue, guess.length())) {
+        for(int i=0; i<guess.length();i++){
+            betterClueForGuess=(betterClueForGuess*10)+3;
+        }   
+        int clue= minClue(guess.length());
+        while (!isMaxClue(clue, guess.length())) {
             // Verifica se a clue atual está presente em mais palavras do que a última clue guardada
             if (howManyWordsWithClue(dictionary, clue, guess) > howManyWordsWithClue) {
                 howManyWordsWithClue = howManyWordsWithClue(dictionary, clue, guess);
                 betterClueForGuess = clue;
                 }
+                clue=nextClue(clue, guess.length());
         }
+
         return betterClueForGuess;
     }
 
