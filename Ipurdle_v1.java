@@ -1,58 +1,44 @@
+import java.util.Random;
 import java.util.Scanner;
-/**
- * O objetivo do jogador é, a partir da pista recebida para cada palavra jogada, adivinhar a palavra;
- * O jogo termina quando a palavra é revelada ou após ter sido atingido o número máximo de tentativa;
- * 
- * @author Rodrigo Frutuoso 61865
- * @author Tiago Leite 61863
- *
- * Compilar: javac Ipurdle.java
- * Executar para default(size = 5 && maxAttempts = 6): java Ipurdle
- * Executar para outros size(maior de 4 e menor de 7) && outros maxAttempts, (substituir os dois por um número inteiro): java Ipurdle size maxAttempts
- */
-public class Ipurdle {
-    public static void main(String[] args) {
-        int size = 5;
-        int maxAttempts = 6;
-        // Tarefa adicional - verificar
-        if (args.length >= 2) {
-            size = Integer.parseInt(args[0]);
-            maxAttempts = Integer.parseInt(args[1]);
-        }
 
-        DictionaryIP gameWordsDictionary = new DictionaryIP(size);
-        DictionaryIP puzzlesDictionary = new DictionaryIP(size);
+public class Ipurdle_v1 {
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        // size varia entre 3 e 7 
+        int clue;
+        int size = 5;
+        String guess = "";
+        int Maxattempts = 6;
+        DictionaryIP gameWordsDictionary = new DictionaryIP(5);
+        DictionaryIP puzzlesDictionary = new DictionaryIP(5);
         Scanner sc = new Scanner(System.in);
-        boolean vitoria = false;
+        Random random = new Random(); 
+        String word = puzzlesDictionary.getWord(random.nextInt(puzzlesDictionary.lenght()));
 
         System.out.println();
         System.out.println("Bem vindo ao jogo Ipurdle!");
-        System.out.println("Neste jogo as palavras têm tamanho " + size + ". O dicionário tem apenas palavras em inglês realcionadas com IP.");
-        System.out.println("Tens apenas " + maxAttempts +" tentativas para advinhar a palavra. Boa sorte!");
+        System.out.println("Neste jogo as palavras têm tamanho 5. O dicionário tem apenas palavras em inglês realcionadas com IP.");
+        System.out.println("Tens apenas 6 tentativas para advinhar a palavra. Boa sorte!");
         
-        while (maxAttempts > 0 && !vitoria){
-            System.out.print("Palavra a jogar? ");
-            String guess = sc.nextLine().toUpperCase();
-            int pista=playGuess(puzzlesDictionary, guess);
+        System.out.println(word);
 
-            if (guess.length() != size)
-            System.out.println("Palavra inválida. Tamanho errado");
-            else if (!gameWordsDictionary.isValid(guess)) {
-                System.out.println("Palavra inválida. Não existe no dicionário.");
-            } else {
-            System.out.println("Palavra com pista -> " + printClue(guess, pista));
-            maxAttempts--;
-            if (isMaxClue(pista, guess.length())){
-                vitoria = true;
-            }
+        while (Maxattempts > 0 || !guess.equals(word)){
+            Maxattempts--;
+            System.out.print("Palavra a jogar? ");
+            guess = sc.nextLine().toUpperCase();
+            System.out.println(guess);
+            clue = clueForGuessAndWord(guess, word);
+            System.out.println(printClue(guess, clue, size)); 
+            System.out.println(playGuess(puzzlesDictionary, guess));
         }
-        }
-        if (vitoria == false){
-            System.out.println("Ohhh, perdeste.");
-        } else {
-            System.out.println("Parabéns, encontraste a palavra secreta!");
-        }
-          sc.close();
+        if (guess.equals(word))
+                System.out.println("Parabéns, encontraste a palavra secreta!");
+        else if (Maxattempts == 0)
+        System.out.println("Acabaram-se as tentativas, mais sorte na próxima tentativa");
+        
+
     }
 
     /**
@@ -62,10 +48,10 @@ public class Ipurdle {
      * clue é positivo, clue tem size dígitos, clue é composto apenas pelos dígitos 1, 2 e 3
      * e a retornar true se todas as condições se verificarem e false caso contrário.
      * 
-     * @param clue número inteiro que representa a pista para palavras de tamanho size
-     * @param size número inteiro que reprenta o tamanho da clue(da pista)
+     * @param clue
+     * @param size
+     * @ensures size > 0
      * @return true se todas as condições se verificarem e false caso contrário
-     * @requires {@code clue > 0 && size > 0 }
      */
     public static boolean validClue(int clue, int size) {
         // Verifica se clue é positivo
@@ -91,13 +77,12 @@ public class Ipurdle {
 
 
     /**
-     * dado um número inteiro size, e assumindo que
+     *  dado um número inteiro size, e assumindo que
      * size é um número maior que zero, retorna a menor pista para palavras desse tamanho. 
      * 
-     * @param size número inteiro que reprenta o tamanho da clue(da pista)
+     * @param size
+     * @ensures size > 0
      * @return menor pista para palavras desse tamanho
-     * @requires {@code size >0 }
-     * @ensures {@code \result > 0}
      */
     public static int minClue(int size) {
         int min_clue = 1;
@@ -114,11 +99,11 @@ public class Ipurdle {
      * assumindo que size é um número maior que zero e clue representa uma pista para palavras de
      * tamanho size, verifica se clue é a maior pista para palavras desse tamanho. 
      * 
-     * @param clue número inteiro que representa a pista para palavras de tamanho size 
-     * @param size número inteiro que reprenta o tamanho da clue(da pista)
+     * @param clue
+     * @param size
+     * @ensures size > 0
      * @ensures clue representa uma pista para palavras de tamanho size
-     * @return true se a clue atual é máxima, senão false  
-     * @requires {@code clue > 0 && size > 0 }
+     * @return
      */
     public static boolean isMaxClue(int clue, int size) {
         int max_clue = 3;
@@ -137,11 +122,13 @@ public class Ipurdle {
      * calcula o número que representa a pista imediatamente a seguir, ou seja, o menor número inteiro
      * maior que clue que representa uma pista para palavras de tamanho size.
      * 
-     * @param clue número inteiro que representa a pista para palavras de tamanho size
-     * @param size número inteiro que reprenta o tamanho da clue(da pista)
+     * @param clue
+     * @param size
+     * @ensures  size > 0 
+     * @ensures clue representa uma pista para palavras de tamanho size
+     * @ensures clue não é a maior pista para palavras de tamanho size
      * @return o número que representa a pista imediatamente a seguir, ou seja, o menor número inteiro
-     * @requires {@code clue > 0 && size > 0 }
-     * @ensures {@code \result > clue}
+     * maior que clue que representa uma pista para palavras de tamanho size.
      */
     public static int nextClue(int clue, int size) {
         clue++;
@@ -162,31 +149,34 @@ public class Ipurdle {
      * não ser null e um número inteiro clue que se assume representar uma pista para guess, imprime
      * guess com as suas letras coloridas de acordo com a clue. Devem ser coloridas a verde as letras
      * que na pista têm 3, a amarelo as letras que na pista têm 2 e a preto as letras que na pista têm 1.
-     * @param guess palavra que o jogador escolheu
-     * @param clue número inteiro que representa a pista para guess de tamanho size
-     * @requires {@code guess!=null && clue>0}
+     * @param guess
+     * @param clue
+     * @param size
+     * @ensures guess não ser null
+     * @ensures clue representa uma pista para guess
+     * @return guess colorida de acordo com a pista correspondente
      */
-    public static String printClue(String guess, int clue) {
+    public static String printClue(String guess, int clue, int size) {
         StringBuilder guess_colored = new StringBuilder();
         // Ciclo para percorrer a clue da esquerda para a direita
-        for (int i = guess.length(); i > 0; i--) {
+        for (int i = size; i > 0; i--) {
             // Verifica se o algarismo é 1
             if ((clue / (int)Math.pow(10, i - 1)) % 10 == 1) {
-                // Pinta o algarismo no index (guess.length() - i) de preto
+                // Pinta o algarismo no index (size - i) de preto
                 guess_colored.append(
-                    StringColouring.toColoredString(String.valueOf(guess.charAt(guess.length() - i)), StringColouring.BLACK));
+                    StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.BLACK));
             }
             // Verifica se o algarismo é 2
             if ((clue / (int)Math.pow(10, i - 1)) % 10 == 2) {
-                // Pinta o algarismo no index (guess.length() - i) de amarelo
+                // Pinta o algarismo no index (size - i) de amarelo
                 guess_colored.append(
-                    StringColouring.toColoredString(String.valueOf(guess.charAt(guess.length() - i)), StringColouring.YELLOW));
+                    StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.YELLOW));
             }
             // Verifica se o algarismo é 3 
             if ((clue / (int)Math.pow(10, i - 1)) % 10 == 3) {
-                // Pinta o algarismo no index (guess.length() - i) de verde
+                // Pinta o algarismo no index (size - i) de verde
                 guess_colored.append(
-                    StringColouring.toColoredString(String.valueOf(guess.charAt(guess.length() - i)), StringColouring.GREEN));
+                    StringColouring.toColoredString(String.valueOf(guess.charAt(size - i)), StringColouring.GREEN));
             }
         }
         return guess_colored.toString();
@@ -200,10 +190,11 @@ public class Ipurdle {
      * No caso de uma letra de word, que só ocorre uma vez nesta palavra, estar em várias posições
      * erradas de guess, apenas a letra na posição mais à esquerda é identificada como letra certa na
      * posição errada. 
-     * @param guess palavra que o jogador escolheu
-     * @param word palavra a advinhar
+     * @param guess
+     * @param word
+     * @ensures guess e word têm o mesmo tamanho
+     * @
      * @return o inteiro que representa a pista a dar à jogada guess se a palavra a adivinhar for word
-     * @requires {@code guess != null && guess e word têm o mesmo tamanho}
      */
     public static int clueForGuessAndWord(String guess, String word) {
         int clue = 0;
@@ -234,16 +225,19 @@ public class Ipurdle {
     } 
     
     /**
-     * dado um objeto do tipo
+     *  dado um objeto do tipo
      * DictionaryIP que se assume não ser null, um número inteiro clue que se assume representar uma
      * pista para palavras desse dicionário e uma String guess que se assume ter o tamanho certo, retorna
      * o número de palavras válidas do dicionário que se fossem a palavra a adivinhar, dariam origem à
      * pista clue para guess. 
-     * @param dictionary contém a lista das palavras jogáveis 
-     * @param clue número inteiro que representa a pista para guess de tamanho size
-     * @param guess palavra que o jogador escolheu
-     * @return o número de palavras válidas do dicionário que se fossem a palavra a adivinhar, dariam origem à pista clue para guess
-     * @requires {@code dictionary != null && clue > 0 & guess ter o tamanho certo}
+     * @param dictionary
+     * @param clue
+     * @param guess
+     * @ensures dictionary não é null
+     * @ensures clue representa uma pista para palavras desse dicionário
+     * @ensures guess tem o tamanho certo
+     * @return o número de palavras válidas do dicionário que se fossem a palavra a adivinhar, dariam 
+     * origem à pista clue para guess
      */
     public static int howManyWordsWithClue(DictionaryIP dictionary, int clue, String guess) {
         int counter = 0;
@@ -266,10 +260,11 @@ public class Ipurdle {
      * Note que as pistas podem ser percorridas recorrendo às funções minClue e a nextClue descritas
      * acima. A pista calculada diz-se que é a melhor porque é a que torna mais difícil o jogador acertar na
      * palavra. 
-     * @param dictionary contém a lista das palavras jogáveis 
-     * @param guess palavra que o jogador escolheu
+     * @param dictionary
+     * @param guess
+     * @requires dictionary não é null
+     * @requires guess tem o tamanho certo
      * @return o inteiro que representa a pista para guess que serve para mais palavras do dicionário dado
-     * @requires {@code dictionary != null & clue > 0 & guess ter o tamanho certo}
      */
     public static int betterClueForGuess(DictionaryIP dictionary, String guess) {
         int betterClueForGuess = 0;
@@ -294,10 +289,11 @@ public class Ipurdle {
      * 2. remove do dicionário todas as palavras que não resultariam nessa pista
      * 3. retorna a pista
      * 
-     * @param dictionary contém a lista das palavras jogáveis 
-     * @param guess palavra que o jogador escolheu
+     * @param dictionary
+     * @param guess
+     * @requires dictionary não é null
+     * @requires guess tem o tamanho certo
      * @return pista
-     * @requires {@code dictionary != null && clue > 0 & guess ter o tamanho certo}
      */
     public static int playGuess(DictionaryIP dictionary, String guess) {
         int clue = betterClueForGuess(dictionary, guess);
