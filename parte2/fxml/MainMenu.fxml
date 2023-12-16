@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="300.0" prefWidth="400.0"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="MainMenuController" styleClass="vbox">
+	<children>
+		<Label text="Select Word Length" styleClass="label" />
+		<RadioButton fx:id="radio5" text="5 Letters"
+			styleClass="radio-button" />
+		<RadioButton fx:id="radio6" text="6 Letters"
+			styleClass="radio-button" />
+		<RadioButton fx:id="radio7" text="7 Letters"
+			styleClass="radio-button" />
+		<Button fx:id="startGameButton" mnemonicParsing="false"
+			text="Start Game" onAction="#startGame" styleClass="button" />
+	</children>
+</VBox>
