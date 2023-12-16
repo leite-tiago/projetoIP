@@ -2,8 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import javax.xml.validation.Validator;
-
 public class IpurdleGame {
     
     private String[] ALL_WORDS;
@@ -24,7 +22,6 @@ public class IpurdleGame {
      */
     public IpurdleGame (int wordSize, int maxGuesses) {
         // dar valores aos atributos
-        this.over = false;
         this.wordSize = wordSize;
         this.maxGuesses = maxGuesses;
         this.board = new Board(wordSize, maxGuesses);
@@ -62,11 +59,7 @@ public class IpurdleGame {
              * caso contrário é colocado o valor false
              */
             for (int i = 0; i < ALL_WORDS.length; i++) {
-                if (ALL_WORDS[i].length() == wordSize) {
-                    VALID_WORDS[i] = true;
-                } else {
-                    VALID_WORDS[i] = false;
-                }
+                VALID_WORDS[i] = true;
             }
 
         } catch (FileNotFoundException e) {
@@ -156,7 +149,45 @@ public class IpurdleGame {
                 elements[i] = LetterStatus.INEXISTENT;
             }
         }
-        return new Clue(elements);
+        Clue clue = new Clue(elements);
+
+        /////////////////////// how many words with clue /////////////////////////////////////
+        int howManyWordsWithClue = 0;
+        // Ciclo para percorrer o dicionário
+        for(int i = 0; i < ALL_WORDS.length; i++){
+            word = ALL_WORDS[i];
+            // Verifica se clue é válida para a palavra do dicionário no índice i
+            if(clue == clueForGuessAndWord(guess, word)) {
+                howManyWordsWithClue++;
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        ///////////////////////// better clue for guess ////////////////////////////////////////////////////
+        howManyWordsWithClue = 0;
+        LetterStatus[] MaxClueElems = new LetterStatus[guess.length()];
+        for(int i = 0; i < guess.length(); i++) {
+            MaxClueElems[i] = LetterStatus.CORRECT_POS;
+        }   
+        Clue MaxClue = new Clue(MaxClueElems);
+
+        int clue = minClue(guess.length());
+        while (!isMaxClue(clue, guess.length())) {
+            // Verifica se a clue atual está presente em mais palavras do que a última clue guardada
+            if (howManyWordsWithClue(dictionary, clue, guess) > howManyWordsWithClue) {
+                howManyWordsWithClue = howManyWordsWithClue(dictionary, clue, guess);
+                betterClueForGuess = clue;
+                }
+                clue=nextClue(clue, guess.length());
+        }
+
+        return betterClueForGuess;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
+
+
     }
 
     /**
@@ -167,6 +198,39 @@ public class IpurdleGame {
      * @return
      */
     public Clue playGuess(String guess) {
+        /////////////////////// how many words with clue /////////////////////////////////////
+        int howManyWordsWithClue = 0;
+        // Ciclo para percorrer o dicionário
+        for(int i = 0; i < ALL_WORDS.length; i++){
+            word = ALL_WORDS[i];
+            // Verifica se clue é válida para a palavra do dicionário no índice i
+            if(clue == clueForGuessAndWord(guess, word)) {
+                howManyWordsWithClue++;
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+        
+
+
+
+
+
+        
+    //     int clue = betterClueForGuess(dictionary, guess);
+
+    //     for (int i = 0; i < dictionary.lenght(); i++) {
+    //         if (clue != clueForGuessAndWord(guess, dictionary.getWord(i)))
+    //             dictionary.selectForRemove(i);
+    //     }
+    //     dictionary.removeSelected();
+    //     return clue;
+    // }
+
+
+
+
+
+
         int size = this.board.wordLength();
         Clue bestClue = new Clue ((int)Math.pow(3, size),size);
         Clue clue = new Clue(1,size);
@@ -212,10 +276,8 @@ public class IpurdleGame {
      * @return representação textual do estado da partida
     */
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("Ipurdle with words of ").append(this.wordLength()).append(" letters.");
-        result.append("\nRemaining guesses: ").append(this.maxGuesses() - this.guesses()).append("\n");
-        
-        return result.toString();
+        return "Ipurdle with words of " + this.board.wordLength() + " letters\n" +
+               "Remaining guesses: " + (this.board.maxGuesses() - this.board.guesses()) + "\n" +
+               this.board.toString();
     }
 }
