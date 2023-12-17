@@ -212,6 +212,7 @@ public class Ipurdle {
      * @requires {@code guess != null && guess e word têm o mesmo tamanho}
      */
     public static int clueForGuessAndWord(String guess, String word) {
+        System.out.println("word = " + word);
         int clue = 0;
         // Ciclo para percorrer guess
         for(int i = 0; i < guess.length(); i++){
@@ -253,6 +254,8 @@ public class Ipurdle {
      */
     public static int howManyWordsWithClue(DictionaryIP dictionary, int clue, String guess) {
         int counter = 0;
+        System.out.println("dictionary.lenght() = " + dictionary.lenght());
+
         // Ciclo para percorrer o dicionário
         for(int i = 0; i < dictionary.lenght(); i++){
             String word = dictionary.getWord(i);

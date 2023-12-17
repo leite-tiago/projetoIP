@@ -7,9 +7,9 @@ public class Clue {
     private LetterStatus[] elements;
     private int wordSize;
 
-
+    
     ////////////////////////////////// comparar se dois LetterStatus são iguais ////////////////////////
-        private static boolean equalsElements (LetterStatus[] elements, LetterStatus[] elements1) {
+        public static boolean equalsElements (LetterStatus[] elements, LetterStatus[] elements1) {
             boolean error = elements.length != elements1.length;
             int i =  0;
             while (!error && i < elements.length){
@@ -139,4 +139,20 @@ public class Clue {
         }
         return sb.toString();
     }
+
+    // public boolean hasElementsInSamePosition(Clue aux) {
+    //     int count = 0;
+    //     int countRef = 0;
+    //     for (int i = wordSize - 1; i >= 0; --i ) {
+    //         if (this.elements[i] != LetterStatus.INEXISTENT) {
+    //             ++countRef;
+    //             if (this.elements[i] == aux.elements[i]) {
+    //                 ++count;
+    //             }
+    //         }
+    //     }
+    //     return count != 0 && count == countRef;
+    // }
+
+
 }

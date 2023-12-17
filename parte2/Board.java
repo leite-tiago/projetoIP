@@ -8,6 +8,8 @@ public class Board {
     private String guess;
     private Clue clue;
     private int guesses;
+    private String[] guessesArray;
+    private Clue[] cluesArray;
     
     /**
      * build a board for the Ipurdle game with the data provided in the initial state (empty)
@@ -18,6 +20,8 @@ public class Board {
     public Board(int wordSize, int maxGuesses) {
         this.wordSize = wordSize;
         this.maxGuesses = maxGuesses;
+        this.guessesArray = new String[maxGuesses];
+        this.cluesArray = new Clue[maxGuesses];
     }
     /**
      * @return size of the words that can be stored in the board
@@ -45,32 +49,35 @@ public class Board {
      * @requires guess.length() == clue.length() == wordLength() && guesses() < maxGuesses()
      */
     public void insertGuessAndClue(String guess, Clue clue) {
-        this.guess = guess;
-        this.clue = clue;
+        //this.guess = guess;
+        //this.clue = clue;
+        this.guessesArray[guesses] = guess;
+        this.cluesArray[guesses] = clue;
         ++guesses;
     }
     /**
      * @return String representation of the board
      */
+    @Override
     public String toString() {
         // This corresponds to the amount od characters in "| " + " | " + " |" 
-        final int CHARACTHERS_IN_THE_LINE = 7;
+        final int CHARACTERS_IN_THE_LINE = 7;
         StringBuilder sb = new StringBuilder();
 
         for(int i = 0; i < guesses; i++) {
             sb.append("+");
             // Cicle to fill the lines between guesses with "-",
             // the amount of "-" is the size of the clue + the
-            // size of the guess + CHARACTHERS_IN_THE_LINE - 2,
+            // size of the guess + CHARACTERS_IN_THE_LINE - 2,
             // 2 is the two "+" on the beggining and on the end
-            for (int k = 0; k < guess.length() + clue.length() + CHARACTHERS_IN_THE_LINE - 2; k++) {
+            for (int k = 0; k < wordSize + wordSize + CHARACTERS_IN_THE_LINE - 2; k++) {
                 sb.append("-");
             }
             sb.append("+" + "\n");
-            System.out.println("| " + guess + " | " + clue + " |");
+            sb.append("| " + guessesArray[i] + " | " + cluesArray[i] + " |\n");
             if (i == guesses - 1) {
                 sb.append("+");
-                for (int k = 0; k < guess.length() + clue.length() + CHARACTHERS_IN_THE_LINE - 2; k++) {
+                for (int k = 0; k < wordSize + wordSize + CHARACTERS_IN_THE_LINE - 2; k++) {
                     sb.append("-");
                 }
                 sb.append("+" + "\n");

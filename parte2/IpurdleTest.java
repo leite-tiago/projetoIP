@@ -291,7 +291,7 @@ public class IpurdleTest {
 	static void testPlayGuess () {
 		String methodName = "IpurdleGame.testPlayGuess()";
 		boolean error = false;
-		IpurdleGame2 game = new IpurdleGame2(4,5);
+		IpurdleGame game = new IpurdleGame(4,5);
 
 		String guess = "ZZZZ";
 		Clue expectedClue = new Clue(new LetterStatus[] {LetterStatus.INEXISTENT,LetterStatus.INEXISTENT, LetterStatus.INEXISTENT,LetterStatus.INEXISTENT});
@@ -302,7 +302,7 @@ public class IpurdleTest {
 			error = true;
 		}
 		
-		IpurdleGame2 game2 = new IpurdleGame2(5,5);
+		IpurdleGame game2 = new IpurdleGame(5,5);
 		guess = "WHILE";
 		expectedClue = new Clue(new LetterStatus[] {LetterStatus.INEXISTENT,LetterStatus.INEXISTENT, LetterStatus.INEXISTENT,LetterStatus.INEXISTENT, LetterStatus.CORRECT_POS});
 		obtainedClue = game2.playGuess(guess);
@@ -337,20 +337,20 @@ public class IpurdleTest {
 		String methodName = "IpurdleGame.isOver()";
 		boolean error = false;
 
-		IpurdleGame2 game = new IpurdleGame2(5,5);
+		IpurdleGame game = new IpurdleGame(5,5);
 		if (game.isOver()) {
 			failOnMethod(methodName);
 			error = true;
 		}
 
-		IpurdleGame2 game2 = new IpurdleGame2(5,5);
+		IpurdleGame game2 = new IpurdleGame(5,5);
 		game2.playGuess("WHILE");
 		if (game2.isOver()) {
 			failOnMethod(methodName);
 			error = true;
 		}
 
-		IpurdleGame2 game3 = new IpurdleGame2(5,1);
+		IpurdleGame game3 = new IpurdleGame(5,1);
 		game3.playGuess("WHILE");
 		if (!game3.isOver()) {
 			failOnMethod(methodName);
@@ -362,7 +362,7 @@ public class IpurdleTest {
 	static void testIsValid () {
 		String methodName = "IpurdleGame.isValid()";
 		boolean error = false;
-		IpurdleGame2 game = new IpurdleGame2(5,5);
+		IpurdleGame game = new IpurdleGame(5,5);
 
 		String validGuess = "WHILE";
 		if (!game.isValid(validGuess)) {
@@ -383,7 +383,7 @@ public class IpurdleTest {
 		boolean error = false;
 
 		int maxAttempts = 5;
-		IpurdleGame2 game = new IpurdleGame2(5,maxAttempts);
+		IpurdleGame game = new IpurdleGame(5,maxAttempts);
 		int obtained = game.maxGuesses();
 		if (obtained != maxAttempts) {
 			failOnMethod(methodName);
@@ -397,7 +397,7 @@ public class IpurdleTest {
 		String methodName = "IpurdleGame.guesses()";
 		boolean error = false;
 
-		IpurdleGame2 game = new IpurdleGame2(5,5);
+		IpurdleGame game = new IpurdleGame(4,5);
 		int expected = 0;
 		int obtained = game.guesses();
 		if (obtained != expected) {
@@ -422,7 +422,7 @@ public class IpurdleTest {
 		boolean error = false;
 
 		int wordSize = 5;
-		IpurdleGame2 game = new IpurdleGame2(wordSize,4);
+		IpurdleGame game = new IpurdleGame(wordSize,4);
 		int obtained = game.wordLength();
 		if (obtained != wordSize) {
 			failOnMethod(methodName);
