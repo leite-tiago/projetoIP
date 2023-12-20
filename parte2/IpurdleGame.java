@@ -1,7 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
+/**
+ * 
+ * @author Rodrigo Frutuoso 61865
+ * @author Tiago Leite 61863
+ *
+ * Compilar: javac IpurdleGame.java
+ * Executar: java IpurdleGame
+ */
 public class IpurdleGame {
     
     private String[] ALL_WORDS;
@@ -9,8 +16,6 @@ public class IpurdleGame {
     private int wordSize;
     private int maxGuesses;
     private int guesses;
-    //private String guess;
-    //private String word;
     private Board board;
     private boolean over;
     
@@ -22,9 +27,6 @@ public class IpurdleGame {
      */
     public IpurdleGame (int wordSize, int maxGuesses) {
 
-       // System.out.println("wordSize = " + wordSize);
-
-        // dar valores aos atributos
         this.wordSize = wordSize;
         this.maxGuesses = maxGuesses;
         this.board = new Board(wordSize, maxGuesses);
@@ -51,7 +53,7 @@ public class IpurdleGame {
             for(int i = 0; i < ALL_WORDS.length; i++){ 
                 if(dicionarioSc2.hasNextLine()){
                     ALL_WORDS[i] = dicionarioSc2.nextLine();
-                    //System.out.println(ALL_WORDS[i]);
+
                 }
             }
             dicionarioSc2.close();
@@ -81,7 +83,6 @@ public class IpurdleGame {
     }
 
     /**
-     * 
      * @return o tamanho das palavras que podem ser jogadas
      */
     public int wordLength () {
@@ -89,7 +90,6 @@ public class IpurdleGame {
     }
 
     /**
-     * 
      * @return o número máximo de tentativas
      */
     public int maxGuesses () {
@@ -97,7 +97,6 @@ public class IpurdleGame {
     }
 
     /**
-     * 
      * @return quantas tentativas já foram realizadas
      */
     public int guesses () {
@@ -113,9 +112,9 @@ public class IpurdleGame {
     public boolean isValid (String guess) {
         // verifica se a guess tem o tamanho certo (wordSize)
         if(guess.length() == wordSize){
-            // ciclo para verificar se a guess está no dicionario e se é válida
+            // ciclo para verificar se a guess está no dicionario
             for (int i = 0; i < ALL_WORDS.length; i++) {
-                if (guess.toUpperCase().equals(ALL_WORDS[i])/*&& VALID_WORDS[i] == true*/) {
+                if (guess.toUpperCase().equals(ALL_WORDS[i])) {
                     return true;
                 }
             }
@@ -134,27 +133,24 @@ public class IpurdleGame {
     }
 
     /**
-     * 
      * @param guess
      * @param word
      * @requires guess.length() == word.length()
      * @return pista a dar a guess se a palavra a adivinhar for word
      */
     private Clue clueForGuessAndWord(String guess, String word) {
-        //this.guess = guess;
-        //this.word = word;
 
-        LetterStatus[] elements = new LetterStatus[word.length()];
-
-       //System.out.println("method: clueForGuessAndWord, wordSize = " + wordSize + ", word.length() = " + word.length() + ", guess.length() = " + guess.length());
+        LetterStatus[] elements = new LetterStatus[wordSize];
 
         for (int i = 0; i < word.length(); i++) {
-           // System.out.println("guess = " + guess + ", word = " + word + ", i = " + i);
+            // verifica se o caractere situado no indice i da guess está presente na word, se não estiver o método indexOf retorna -1
             if (word.indexOf(guess.charAt(i), 0) != -1) {
-
+                // verifica se o caractere situado no indice i da guess está na mesma posição na word
                 if (guess.charAt(i) == word.charAt(i)) {
+                    // se isto se verificar significa que o caractere já está na posição correta
                     elements[i] = LetterStatus.CORRECT_POS;
                 } else {
+                    // o caractere está presente na word mas não está na posição correta
                     elements[i] = LetterStatus.WRONG_POS;
                     /* 
                      * Subsitui o caractere situado no index i da guess por um espaço em branco.
@@ -165,148 +161,137 @@ public class IpurdleGame {
                     word = word.replaceFirst(String.valueOf(guess.charAt(i)), " ");
                 }
             } else {
+                // se não estiver presente na word é INEXISTENT
                 elements[i] = LetterStatus.INEXISTENT;
             }
         }
         return new Clue(elements);
     }
-    ///////////////////////////////////////////////////// how Many Words With Clue ///////////////////////////////////////////////////////////////////////
+    
+    /**
+     * dado uma Clue clue que se assume representar uma pista para palavras contidas no ALL_WORDS e uma String guess 
+     * que se assume ter o tamanho certo, retorna o número de palavras válidas do dicionário que se fossem a palavra 
+     * a adivinhar, dariam origem à pista clue para guess. 
+     * @param clue representa a pista para guess de tamanho wordSize
+     * @param guess palavra que o jogador escolheu
+     * @return o número de palavras válidas do ALL_WORDS que se fossem a palavra a adivinhar, dariam origem à pista clue para guess
+     * @requires {@code ALL_WORDS != null && clue != null && guess.length() == wordSize}
+     */
     private int howManyWordsWithClue(Clue clue, String guess) {
-        //System.out.println("howManyWordsWithClue:");
         int howManyWordsWithClue = 0;
-        // Ciclo para percorrer o dicionário
+        // Ciclo para percorrer as palavras presentes no ALL_WORDS
         for (int i = 0; i < ALL_WORDS.length; i++){
             String word = ALL_WORDS[i];
+            // verifica se a palavra ainda é válida
             if (VALID_WORDS[i] == true) {
                 // Verifica se clue é válida para a palavra do dicionário no índice i
-                Clue aux = clueForGuessAndWord(guess, word);
-                //System.out.println("guess = " + guess + ", word = " + word + ", clue = " + clue.toString() + ", clueForGuessAndWord = " + aux);
-                if (Clue.equalsElements(clue.letterStatus(), aux.letterStatus())) {
+                if (Clue.equalsElements(clue.letterStatus(), clueForGuessAndWord(guess, word).letterStatus())) {
                     howManyWordsWithClue++;
                 }
             }
-            
         }
-
-        //System.out.println("howManyWordsWithClue = " + howManyWordsWithClue);
-        // ///
-        // System.out.println("Press any key to continue");
-        // Scanner in = new Scanner(System.in);
-        // in.nextLine();
-        // ///
         return howManyWordsWithClue;
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////// better clue for guess ////////////////////////////////////////////////////
+    /**
+     * dada uma String guess que se assume ter o tamanho certo,
+     * retorna a clue que representa a pista para guess que serve para mais palavras do ALL_WORDS.
+     * No caso de haver pistas empatadas, dentre estas, é escolhida a menor.
+     * A pista calculada diz-se que é a melhor porque é a que torna mais difícil o jogador acertar na
+     * palavra. 
+     * @param guess palavra que o jogador escolheu
+     * @return a clue que representa a pista para guess que serve para mais palavras do ALL_WORDS
+     * @requires {@code ALL_WORDS != null && guess.length() == wordSize}
+     */
     public Clue betterClueForGuess(String guess) {  
-        
-       // System.out.println("betterClueForGuess");
-    // criar uma clue em que todos os elementos sejam CORRECT_POS, ou seja, criar a maxClue
+        // criar uma clue em que todos os elementos sejam CORRECT_POS, ou seja, criar a maxClue
         Clue betterClueForGuess = new Clue((int)Math.pow(3, wordSize), wordSize); // 3 elevado ao tamanho da guess vai ser o maior order number
        
         // criar uma clue em que todos os elementos sejam INEXISTENT, ou seja, criar a minClue
-        Clue currentClue = new Clue(1, wordSize);
+        Clue currentClue = new Clue(1, wordSize); // orderNumber 1 corresponde à minClue 
 
         int howManyWordsWithClue, maxWordsWithClue = 0;
-         
-        //System.out.println("betterClueForGuess: guess = " + guess);
-
+        
+        // ciclo para percorrer as clues
         while (!currentClue.isMax()) {
             // Verifica se a clue atual está presente em mais palavras do que a última clue guardada
             howManyWordsWithClue = howManyWordsWithClue(currentClue, guess);
-            //System.out.println("howManyWordsWithClue = " + howManyWordsWithClue);
 
+            /* 
+             * verificar se a currentClue serve para mais palavras do que a antiga currentClue
+             * e registar tanto a clue como a quantidade de palavras para que ela serve.
+             */ 
             if (howManyWordsWithClue > maxWordsWithClue) {
                 maxWordsWithClue = howManyWordsWithClue;
                 betterClueForGuess = currentClue;
             }
             currentClue = new Clue(currentClue.orderNumber() + 1, wordSize);
 
+            /*  
+             * este bloco de código apenas serve para verificar se a maxClue é a betterClue, 
+             * caso contrário sairia do while e não chegava a testar a maxClue.             
+             */ 
             if (currentClue.isMax()) {
                 // Verifica se a clue atual está presente em mais palavras do que a última clue guardada
                 howManyWordsWithClue = howManyWordsWithClue(currentClue, guess);
-                //System.out.println("howManyWordsWithClue = " + howManyWordsWithClue);
 
+                /* 
+                 * verificar se a currentClue serve para mais palavras do que a antiga currentClue
+                 * e registar tanto a clue como a quantidade de palavras para que ela serve.
+                 */ 
                 if (howManyWordsWithClue > maxWordsWithClue) {
                     maxWordsWithClue = howManyWordsWithClue;
                     betterClueForGuess = currentClue;
                 }
             }
         } 
-
-        System.out.println("maxWordsWithClue = " + maxWordsWithClue + ", betterClueForGuess = " + betterClueForGuess);
-        
         return betterClueForGuess;
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * faz a jogada (com tudo o que isso implica) devolvendo a pista para guess que 
      * serve para mais palavras. 
+     * 1. conta que foi feita uma jogada
+     * 2. calcula a melhor pista para guess face às VALID_WORDS, recorrendo à função anterior, betterClueForGuess
+     * 3. coloca a false no VALID_WORDS todas as palavras que não resultariam na melhor pista
+     * 4. atualiza a variável over, esta variável vai ser usada pelo método isOver para ver se o jogo já acabou
+     * 5. insere a guess e a clue no board
+     * 6. retorna a pista
      * @param guess
      * @requires isValid(guess) && !isOver()
-     * @return
+     * @return pista para guess que serve para mais palavras. 
      */
     public Clue playGuess(String guess) {
+        // 1.
         ++guesses;
 
-       //        System.out.println("guess = " + guess + ", wordSize = " + wordSize + ", word = " + word);
-
-        // Check if guess exists in ALL_WORDS array 
-        boolean hasGuess = false;
-        for (int i = 0; !hasGuess && i < ALL_WORDS.length; ++i) {
-            if (ALL_WORDS[i].equals(guess)) {
-                hasGuess = true;
-            }
-        }
-        if (!hasGuess) {
-            System.out.println("hasGuess = false");
-
-            this.over = (guesses == maxGuesses);
-            return new Clue(1, guess.length());
-        }
-        
-        System.out.println("hasGuess = true");
-        
+        // 2.
         Clue betterClue = betterClueForGuess(guess);
-        ///
-        System.out.println("VALID_WORDS: ");
-        for (int i = 0; i < VALID_WORDS.length; i++) {
-            if (VALID_WORDS[i] == true) {
-                System.out.println("ALL_WORDS[i] = " + ALL_WORDS[i]);
-            }
-        }
-        System.out.println("betterClue for guess " + guess + ": " + betterClue);
-        ///
 
-
-        // Remove all words that don't have this clue
+        // 3.
         for (int i = 0; i < ALL_WORDS.length; i++) {
             if (VALID_WORDS[i] == true) {
                 if (!Clue.equalsElements(betterClue.letterStatus(), clueForGuessAndWord(guess, ALL_WORDS[i]).letterStatus())) {
                     VALID_WORDS[i] = false;
                 }
-            }
-            
+            }    
         }
-        for (int i = 0; i < VALID_WORDS.length; i++) {
-            if (VALID_WORDS[i] == true) {
-                System.out.println("ALL_WORDS[i] = " + ALL_WORDS[i]);
-            }
-        }
+
+        // 4.
         this.over = (betterClue.isMax() || guesses == maxGuesses);
-
+        
+        // 5.
         this.board.insertGuessAndClue(guess, betterClue);
-
-        return betterClue;
+        
+        // 6.
+        return betterClueForGuess(guess); 
     }
 
     /** 
-     * que dá uma representação textual do estado da partida como ilustrado
+     * dá uma representação textual do estado da partida como ilustrado:
      * 
-     * Ipurdle with words of 5 letters.
-     * Remaining guesses: 4
+     * Ipurdle com palavras de 5 letras.
+     * Tentativas restantes: 4
      * +---------------+
      * | WHILE | ____* |
      * +---------------+
@@ -316,11 +301,13 @@ public class IpurdleGame {
      * @return representação textual do estado da partida
     */
     public String toString() {
+
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Ipurdle with words of " + this.board.wordLength() + " letters\n");
-        sb.append("Remaining guesses: " + (this.board.maxGuesses() - this.board.guesses()) + "\n");
+        sb.append("Ipurdle com palavras de " + this.board.wordLength() + " letras\n");
+        sb.append("Tentativas restantes: " + (this.board.maxGuesses() - this.board.guesses()) + "\n");
         sb.append(this.board.toString());
+
         return sb.toString();
     }
 }

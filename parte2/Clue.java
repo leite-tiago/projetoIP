@@ -1,46 +1,60 @@
-/** 
- * The objects of this type represent clues for words of a certain size
+/**
+ * Os objetos deste tipo representam clues para palavras de um certo tamanho (wordSize)
+ * 
+ * @author Rodrigo Frutuoso 61865
+ * @author Tiago Leite 61863
+ *
+ * Compilar: javac Clue.java
+ * Executar: java Clue
  */
 public class Clue {
 
     private int orderNumber;
-    private LetterStatus[] elements;
     private int wordSize;
+    private LetterStatus[] elements;
 
-    
-    ////////////////////////////////// comparar se dois LetterStatus são iguais ////////////////////////
-        public static boolean equalsElements (LetterStatus[] elements, LetterStatus[] elements1) {
-            boolean error = elements.length != elements1.length;
-            int i =  0;
-            while (!error && i < elements.length){
-                error = elements[i] != elements1[i];
-                i++;
-            }
-            return !error;
+    /**
+     * este método serve para comparar se dois LetterStatus são iguais, ou seja, compara os elementos de uma clue
+     * @param elements
+     * @param elements1
+     * @return true se os elementos das duas clues forem iguais 
+     */
+    public static boolean equalsElements (LetterStatus[] elements, LetterStatus[] elements1) {
+        boolean error = elements.length != elements1.length;
+        int i =  0;
+        while (!error && i < elements.length){
+            error = elements[i] != elements1[i];
+            i++;
         }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
+        return !error;
+    }
     
     /**
-     * build a clue with the given elements
-     * 
+     * constrói uma clue com os elementos dados
      * @param elements
      * @requires elements != nul
      */
     public Clue(LetterStatus[] elements) {
         this.elements = elements;
-        //System.out.println(Arrays.toString(elements));
         wordSize = elements.length;
         orderNumber = 1;
-        boolean carry; 
+        
+        // elements1 corresponde à minClue
         LetterStatus[] elements1 = new LetterStatus[wordSize];
         for (int i = 0; i < wordSize; i++) {
             elements1[i] = LetterStatus.INEXISTENT;
         }
-        // Auxiliar variable that contains the LetterStatus enum values
-        final LetterStatus[] values = LetterStatus.values();
+
+        boolean carry; 
         
-        while (equalsElements(elements, elements1)) {
-            /// Build the next clue ///////////////////////////////////////////
+        /*
+         * este ciclo serve para descobrir o orderNumber da clue que vai ser criada com elements.
+         * começa com a minClue e e vai avançando nas clues até que o elements1 seja igual ao elements,
+         * cada vez que a clue aumenta temos de ter cuidado para verificar se há carry, se houver
+         * verificamos se elements1[j]== LetterStatus.CORRECT_POS e caso isso seja verdade significa que
+         * vai haver carry outra vez. O ciclo continua enquanto houver carry.
+         */
+        while (!equalsElements(elements, elements1)) {
             carry = true;
             for (int j = elements1.length - 1; j >= 0 && carry; j--) {
                 if (carry) {
@@ -48,17 +62,18 @@ public class Clue {
                         elements1[j] = LetterStatus.INEXISTENT;
                         carry = true;
                     } else {
-                        elements1[j] = values[elements1[j].ordinal() + 1];
+                        // se o elements1[j] estivesse a INEXISTENT passa a WRONG_POS e se estivesse a WRONG_POS passa a CORRECT_POS
+                        elements1[j] = LetterStatus.values()[elements1[j].ordinal() + 1];
                         carry = false;
                     }
                 }
             }
             ++orderNumber;
         }
-       ///////////////////////////////////////////////////////////////////
     }
+
     /**
-     * build a clue with the size of the word and the order number
+     * constrói uma clue dado um orderNumber e um wordSize
      * @param orderNumber
      * @param wordSize
      * @requires wordSize > 0 e 1 ≤ orderNumber ≤ 3 ^(wordSize)
@@ -66,16 +81,24 @@ public class Clue {
     public Clue(int orderNumber, int wordSize) {
         this.orderNumber = orderNumber;
         this.wordSize = wordSize;
+        
+        // inicialização dos elementos todos a INEXISTENT
         this.elements = new LetterStatus[wordSize];
         for (int i = 0; i < wordSize; i++) {
             elements[i] = LetterStatus.INEXISTENT;
         }
-        // Auxiliar variable that contains the LetterStatus enum values
-        final LetterStatus[] values = LetterStatus.values();
+
         boolean carry;
-        // Starting from the clue 0, advance to deisred order number
+
+        /*
+         * este pedaço de código é quase idêntico ao do construtor acima,
+         * mas agora sabemos o orderNumber e queremos dar valores aos elements da clue.
+         * Começamos outra vez com a minClue e vamos avançando até ao orderNumber desejado.
+         * 
+         * o orderNumber só começa em 1 mas precisamos de acessar ao índice 0 do elements, 
+         * por isso o i = 0 e i <= orderNumber - 1 no for.
+         */
         for (int i = 0; i < orderNumber - 1; i++) {
-            /// Build the next clue ///////////////////////////////////////////
             carry = true;
             for (int j = elements.length - 1; j >= 0 && carry; j--) {
                 if (carry) {
@@ -83,35 +106,38 @@ public class Clue {
                         elements[j] = LetterStatus.INEXISTENT;
                         carry = true;
                     } else {
-                        elements[j] = values[elements[j].ordinal() + 1];
+                        elements[j] = LetterStatus.values()[elements[j].ordinal() + 1];
                         carry = false;
                     }
                 }
             }
-            ///////////////////////////////////////////////////////////////////
         }
 
     }
+
     /**
-     * @return the length of the clue
+     * @return o tamamho de uma clue
      */
     public int length() {
         return elements.length;
     }
+
     /**
-     * @return the order number of a clue
+     * @return o orderNumber de uma clue
      */
     public int orderNumber() {
         return this.orderNumber;
     }
+
     /**
-     * @return a vector with the elements of the clue
+     * @return um vetor com os elementos da clue
      */
     public LetterStatus[] letterStatus() {
         return this.elements;
     }
+
     /**
-     * @return true if the clue is complete
+     * @return true se a clue tiver todos os elementos a CORRECT_POS
      */
     public boolean isMax() {
         for (int i = 0; i < this.length(); i++) {
@@ -121,10 +147,13 @@ public class Clue {
         }
         return true;
     }
+
     /**
-     * @return string representation of a list where the symbols *, o and _ 
-     * are used to represent letter in the correct position, letter in the wrong
-     * position and non-existent letter
+     * @return uma representação textual de uma lista onde são usados os símbolos *, o e _ para representar a clue.
+     * 
+     *  * -> letra na posição correta
+     *  o -> letra na posição errada 
+     *  _ -> letra inexistente
      */
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -139,20 +168,4 @@ public class Clue {
         }
         return sb.toString();
     }
-
-    // public boolean hasElementsInSamePosition(Clue aux) {
-    //     int count = 0;
-    //     int countRef = 0;
-    //     for (int i = wordSize - 1; i >= 0; --i ) {
-    //         if (this.elements[i] != LetterStatus.INEXISTENT) {
-    //             ++countRef;
-    //             if (this.elements[i] == aux.elements[i]) {
-    //                 ++count;
-    //             }
-    //         }
-    //     }
-    //     return count != 0 && count == countRef;
-    // }
-
-
 }

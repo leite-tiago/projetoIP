@@ -1,18 +1,22 @@
 /**
- * The objects of this type represent the state of the board of an Ipurdle game
+ * Os objetos deste tipo representam o estado do tabuleiro de um jogo de Ipurdle.
+ * 
+ * @author Rodrigo Frutuoso 61865
+ * @author Tiago Leite 61863
+ *
+ * Compilar: javac Board.java
+ * Executar: java Board
  */
 public class Board {
 
     private int wordSize;
     private int maxGuesses;
-    private String guess;
-    private Clue clue;
     private int guesses;
     private String[] guessesArray;
     private Clue[] cluesArray;
     
     /**
-     * build a board for the Ipurdle game with the data provided in the initial state (empty)
+     * cria um tabuleiro para o jogo de Ipurdle com os dados fornecidos no estado inicial (vazio)
      * @param wordSize
      * @param maxGuesses
      * @requires wordSize >= 1 e maxGuesses >= 1
@@ -24,52 +28,59 @@ public class Board {
         this.cluesArray = new Clue[maxGuesses];
     }
     /**
-     * @return size of the words that can be stored in the board
+     * @return tamanho das palavras que podem ser guardadas no tabuleiro
      */
     public int wordLength() {
         return wordSize;
     }
     /**
-     * @return maximum number of guesses that can be made
+     * @return número máximo de tentativas
      */
     public int maxGuesses() {
         return maxGuesses;
     }
     /**
-     * @return number of guesses that have been made
-     * @requires 0 <= guesses() <= maxGuesses()
+     * @return número de tentativas que já foram feitas
+     * @requires 0 <= guesses() && guesses() <= maxGuesses()
      */
     public int guesses() {
         return guesses;
     }
     /**
-     * regist the word and the clues that have been given
+     * regista palavra e pista fornecidas
      * @param guess
      * @param clue
      * @requires guess.length() == clue.length() == wordLength() && guesses() < maxGuesses()
      */
     public void insertGuessAndClue(String guess, Clue clue) {
-        //this.guess = guess;
-        //this.clue = clue;
         this.guessesArray[guesses] = guess;
         this.cluesArray[guesses] = clue;
         ++guesses;
     }
     /**
-     * @return String representation of the board
+     * @return representação textual do estado do tabuleiro como se ilustra abaixo: 
+     *  +---------------+
+     *  | WHILE | ____* |
+     *  +---------------+
+     *  | FIELD | __o__ |
+     *  +---------------+
+     *  | ABOVE | ***** |
+     *  +---------------+
      */
     @Override
     public String toString() {
-        // This corresponds to the amount od characters in "| " + " | " + " |" 
+        // Isto corresponde à quantidade the caracteres em:  "| " + " | " + " |" 
         final int CHARACTERS_IN_THE_LINE = 7;
         StringBuilder sb = new StringBuilder();
 
         for(int i = 0; i < guesses; i++) {
             sb.append("+");
-            // Cicle to fill the lines between guesses with "-",
-            // the amount of "-" is the size of the clue + the
-            // size of the guess + CHARACTERS_IN_THE_LINE - 2,
-            // 2 is the two "+" on the beggining and on the end
+            /*
+             * Ciclo para preencher as linhas no meio das guesses com "-",
+             * a quantidade de "-" é o tamanhao da clue + o tamanho da guess,
+             * ou seja, wordSize * 2, + CHARACTERS_IN_THE_LINE - 2, este 2
+             * representa os dois "+" no ínicio e no final da linha
+             */
             for (int k = 0; k < wordSize + wordSize + CHARACTERS_IN_THE_LINE - 2; k++) {
                 sb.append("-");
             }
